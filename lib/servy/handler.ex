@@ -4,12 +4,10 @@ defmodule Servy.Handler do
 
   alias Servy.Conv
   alias Servy.BearController
-  alias Servy.VideoCam
 
   @pages_path Path.expand("../../pages", __DIR__)
 
   import Servy.Plugins, only: [rewrite_path: 1, log: 1, track: 1]
-  import Servy.View, only: [render: 3]
   import Servy.Parser, only: [parse: 1]
 
   @doc "Transforms the request into a response."
@@ -32,9 +30,8 @@ defmodule Servy.Handler do
   end
 
   def route(%Conv{ method: "GET", path: "/sensors" } = conv) do
-    sensor_data = Servy.SensorServer.get_sensor_data
+    sensor_data = Servy.SensorServer.get_sensor_data()
     %{ conv | status: 200, resp_body: inspect sensor_data }
-
   end
 
   def route(%Conv{ method: "GET", path: "/kaboom"}) do
@@ -79,6 +76,7 @@ defmodule Servy.Handler do
     counts = Servy.FourOhFourCounter.get_counts()
 
     %{ conv | status: 200, resp_body: inspect counts}
+  end
 
   def route(%Conv{ path: path } = conv) do
     %{ conv | status: 404, resp_body: "No #{path} here!"}
@@ -105,5 +103,4 @@ defmodule Servy.Handler do
     #{conv.resp_body}
     """
   end
-
 end
